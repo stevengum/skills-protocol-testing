@@ -8,8 +8,7 @@ const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { BotFrameworkHttpClient } = require('botbuilder');
-const { ChannelServiceController } = require('./channelServiceController');
+const { BotFrameworkHttpClient, ChannelServiceRoutes } = require('botbuilder');
 const { RoutingHandler } = require('./routingHandler');
 const { MyConversationIdFactory } = require('./myConversationIdFactory');
 const { AuthenticationConfiguration, SimpleCredentialProvider, MicrosoftAppCredentials } = require('botframework-connector');
@@ -39,7 +38,7 @@ const serviceUrl = 'http://localhost:3428/api/connector';
 
 server.post('/api/messages', (req, res) => {
 
-    ChannelServiceController.readActivity(req)
+    ChannelServiceRoutes.readActivity(req)
         .then((activity) => {
 
             const currentConversationId = activity.conversation.id;
@@ -59,5 +58,5 @@ server.post('/api/messages', (req, res) => {
 
 // Backward
 
-const controller = new ChannelServiceController(handler);
-controller.startUp('/api/connector', server);
+const controller = new ChannelServiceRoutes(handler);
+controller.register('/api/connector', server);
