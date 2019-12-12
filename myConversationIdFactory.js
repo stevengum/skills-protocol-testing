@@ -1,28 +1,34 @@
+const { SkillConversationIdFactoryBase } = require('botbuilder');
 
-class MyConversationIdFactory
-{
+class MyConversationIdFactory extends SkillConversationIdFactoryBase {
     constructor() {
+        super();
         this.forwardXref = {};
         this.backwardXref = {};
         this.nextId = 0;
     }
 
-    createConversationId(currentConversationId, currentServiceUrl) {
+    async createSkillConversationId(ref) {
+        const convId = ref.conversation.id;
         let result = '';
-        if (this.forwardXref.hasOwnProperty(currentConversationId)) {
-            result = this.forwardXref[currentConversationId];
+        if (this.forwardXref.hasOwnProperty(convId)) {
+            result = this.forwardXref[convId];
         } else {
             result = `conversationId_${ this.nextId }`;
-            this.forwardXref[currentConversationId] = result;
+            this.forwardXref[convId] = result;
             this.nextId++;
         }
-        this.backwardXref[result] = { conversationId: currentConversationId, serviceUrl: currentServiceUrl };
+        this.backwardXref[result] = ref;
         return result;
     }
 
-    getConversationInfo(nextConversationId) {
+    async getConversationReference(convId) {
+        return this.backwardXref[convId];
+    }
 
-        return this.backwardXref[nextConversationId];
+    async deleteConversationReference(convId) {
+        delete this.forwardXref[convId];
+        delete this.backwardXref[convId];
     }
 }
 
