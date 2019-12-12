@@ -26,8 +26,8 @@ const skillClient = new SkillHttpClient(credentialProvider, factory);
 const bot = new TeamsParentBot(skillClient);
 
 const adapter = new BotFrameworkAdapter({
-    appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword
+    appId: process.env.TeamsAppId,
+    appPassword: process.env.TeamsAppPassword
 });
 
 const skillHandler = new SkillHandler(adapter, bot, factory, credentialProvider, authConfig);
